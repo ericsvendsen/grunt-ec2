@@ -8,7 +8,8 @@ var running = '[[ $(pm2 jlist) != "[]" ]]';
 
 module.exports = {
     pm2_reload: function () {
-        return util.format('%s && sudo pm2 reload all || echo "pm2 not started."', running);
+        //return util.format('%s && sudo pm2 reload all || echo "pm2 not started."', running);
+        return util.format('%s && sudo pm2 restart all || echo "pm2 not started."', running);
     },
     pm2_start: function (name) {
         var defaults = {
