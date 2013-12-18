@@ -25,14 +25,16 @@ module.exports = function(grunt){
         var versions = conf('SRV_VERSIONS');
         var steps = [[
             util.format('echo "configuring up %s instance..."', name)
-        ], [ // enable forwarding
+        ], workflow.if_has('APACHE_ENABLED', [ // install apache
+            'sudo apt-get install -y apache2'
+        ]), workflow.if_has('PORT_FORWARDING_ENABLED', [ // enable forwarding
             'cp /etc/sysctl.conf /tmp/',
             'echo "net.ipv4.ip_forward = 1" >> /tmp/sysctl.conf',
             'sudo cp /tmp/sysctl.conf /etc/',
             'sudo sysctl -p /etc/sysctl.conf'
-        ], [ // forward port 80
+        ]), workflow.if_has('PORT_FORWARDING_ENABLED', [ // forward port 80
             forwardPort(80, 8080)
-        ], workflow.if_has('SSL_ENABLED', // forward port 443
+        ]), workflow.if_has('SSL_ENABLED', // forward port 443
             forwardPort(443, 8433)
         ), [ // rsync
             util.format('sudo mkdir -p %s', versions),
@@ -58,11 +60,11 @@ module.exports = function(grunt){
             'sudo add-apt-repository ppa:chris-lea/node.js -y',
             'sudo apt-get update',
             'sudo apt-get install nodejs -y'
-        ], [ // pm2
+        ], workflow.if_has('PM2_ENABLED', [ // pm2
             'sudo apt-get install make g++ -y',
             'sudo npm install -g pm2',
             'sudo pm2 startup'
-        ]];
+        ])];
 
         function forwardPort(from, to) {
             return [
@@ -76,8 +78,10 @@ module.exports = function(grunt){
         workflow(steps, { name: name }, next);
 
         function next () {
-            grunt.log.writeln('Enqueued task for %s configuration.', chalk.cyan('nginx'));
-            grunt.task.run('ec2_nginx_configure:' + name);
+            if (conf('NGINX_ENABLED')) {
+                grunt.log.writeln('Enqueued task for %s configuration.', chalk.cyan('nginx'));
+                grunt.task.run('ec2_nginx_configure:' + name);
+            }
             done();
         }
     });

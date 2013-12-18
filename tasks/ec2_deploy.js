@@ -27,7 +27,7 @@ module.exports = function(grunt){
         var v = grunt.config('pkg.version');
         var dest = util.format(version, v);
         var local = '.';
-		
+
         var rsync = {
             name: 'v' + v,
             local: local,
@@ -52,11 +52,13 @@ module.exports = function(grunt){
             util.format('sudo npm --prefix %s install --production --loglevel %s', dest, verbosity)
         ]), workflow.if_has('NPM_REBUILD', [
             'sudo npm rebuild'
-        ]), [
+        ]), workflow.if_has('PM2_ENABLED', [
             util.format('sudo ln -sfn %s %s', dest, target),
             commands.pm2_reload(),
             commands.pm2_start(name)
-        ], workflow.if_has('NGINX_ENABLED', [
+        ]), workflow.if_has('APACHE_ENABLED', [
+            util.format('sudo service apache2 reload')
+        ]), workflow.if_has('NGINX_ENABLED', [
             'sudo nginx -s reload'
         ])];
 
@@ -75,7 +77,11 @@ module.exports = function(grunt){
             grunt.task.run('ec2_pagespeed:' + c.ip);
 
             grunt.log.writeln('You can access the instance via %s on %s', scheme.toUpperCase(), text);
-            grunt.log.write('Will tail nginx error logs and flush pm2 logs in 5s.');
+            if (conf('NGINX_ENABLED')) {
+                grunt.log.write('Will tail nginx error logs and flush pm2 logs in 5s.');
+            } else {
+                grunt.log.write('Will flush pm2 logs in 5s.');
+            }
 
             setTimeout(peek, 5000);
         }
@@ -83,11 +89,18 @@ module.exports = function(grunt){
         function peek () {
             grunt.log.writeln('Flushing...');
 
-            ssh([
-                'tail -3 /var/log/nginx/error.log',
-                'sudo pm2 flush',
-                'sudo pm2 list'
-            ], { name: name }, done);
+            if (conf('NGINX_ENABLED')) {
+                ssh([
+                    'tail -3 /var/log/nginx/error.log',
+                    'sudo pm2 flush',
+                    'sudo pm2 list'
+                ], { name: name }, done);
+            } else {
+                ssh([
+                    'sudo pm2 flush',
+                    'sudo pm2 list'
+                ], { name: name }, done);
+            }
         }
     });
 };
