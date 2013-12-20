@@ -20,7 +20,7 @@ module.exports = {
         // user can override NODE_ENV if need be
         _.assign(env, defaults, user);
 
-        return util.format('%s || sudo pm2 start %s/%s -i 2 --name %s || echo "pm2 already started."',
+        return util.format('%s || sudo NODE_ENV=production pm2 start %s/%s -i 2 --name %s || echo "pm2 already started."',
             running, conf('SRV_CURRENT'), conf('NODE_SCRIPT'), name
         );
     }
