@@ -1,8 +1,8 @@
-# grunt-ec2 [![Build Status](https://travis-ci.org/bevacqua/grunt-ec2.png?branch=master)](https://travis-ci.org/bevacqua/grunt-ec2) [![Dependency Status](https://gemnasium.com/bevacqua/grunt-ec2.png)](https://gemnasium.com/bevacqua/grunt-ec2) [![help me on gittip](http://gbindex.ssokolow.com/img/gittip-43x20.png)](https://www.gittip.com/bevacqua/) [![flattr.png][6]](https://flattr.com/submit/auto?user_id=nzgb&url=https%3A%2F%2Fgithub.com%2Fbevacqua%2Fgrunt-ec2)
+# grunt-ec2 [![Build Status](https://travis-ci.org/bevacqua/grunt-ec2.png?branch=master)](https://travis-ci.org/bevacqua/grunt-ec2) [![Dependency Status](https://gemnasium.com/bevacqua/grunt-ec2.png)](https://gemnasium.com/bevacqua/grunt-ec2) [![help me on gittip](http://gbindex.ssokolow.com/img/gittip-43x20.png)](https://www.gittip.com/bevacqua/) [![flattr.png][6]](https://flattr.com/submit/auto?user_id=nzgb&url=https%3A%2F%2Fgithub.com%2Fbevacqua%2Fgrunt-ec2) ![ga](https://ga-beacon.appspot.com/UA-35043128-6/grunt-ec2/readme?pixel)
 
 > Grunt tasks to create, terminate, and deploy Node applications to AWS EC2 instances, then proxy with nginx
 
-Abstracts away [**aws-cli**](https://github.com/aws/aws-cli) allowing you to easily launch, terminate, and deploy to AWS EC2 instances.
+Abstracts away [**aws-sdk**](https://github.com/aws/aws-sdk-js) allowing you to easily launch, terminate, and deploy to AWS EC2 instances.
 
 Note: This is a _very_, _**very**_ opinionated package. You're invited to fork it and produce your own flow, and definitely encouraged to create pull requests with your awesome improvements.
 
@@ -29,15 +29,7 @@ This is pretty feature packed
 npm install --save-dev grunt-ec2
 ```
 
-For every task in this document, you'll need to set up the AWS configuration for the project. You'll also need to have a **Security Group** set up on AWS. Make sure to enable rules for inbound SSH (port 22) and HTTP (port 80) traffic.
-
-The first time around, you'll [**need to get**](http://www.pip-installer.org/en/latest/installing.html) `pip` to be able to deploy.
-
-Once you installed `pip`, you can install the `awscli` tools.
-
-```shell
-pip install awscli --upgrade
-```
+You'll need to set up the AWS configuration for the project. You'll also need to have a **Security Group** set up on AWS. Make sure to enable rules for inbound SSH (port 22) and HTTP (port 80) traffic.
 
 # Setup
 
@@ -60,7 +52,7 @@ Then, in your `whatever.json` file:
 }
 ```
 
-You'll need to get an access key pair for AWS, as well as create a security group on AWS by hand. Creating security groups through the CLI is not supported by this package yet.
+You'll need to get an access key pair for AWS, as well as create a security group on AWS by hand. Creating security groups is not supported by this package yet.
 
 The `package.json` entry is used to take the `version` number when deploying.
 

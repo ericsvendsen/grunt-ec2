@@ -1,3 +1,25 @@
+# 0.7.2 Grunt Basics
+
+- Revert from Grunt `@0.4.2` to using `@0.4.1`
+
+# 0.7.1 Overly Dependant Package
+
+- Update dependencies to edge versions
+- Use `~` in dependency versions
+
+# 0.7.0 Rooster Tornado
+
+- Differentiate logging from AWS API requests (`aws`) and commands executed (`cmd`)
+
+Fixes
+
+- Fixed issues in `ec2_elb_attach` and `ec2_elb_detach` tasks
+
+**BREAKING**
+
+- Stopped using `aws-cli` in favor of the native `aws-sdk` API
+- Installing `pip` and `aws-cli` isn't necessary anymore
+
 # 0.6.3 Quicksand
 
 Fixes
