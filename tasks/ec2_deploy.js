@@ -8,9 +8,9 @@ var workflow = require('./lib/workflow.js');
 var ssh = require('./lib/ssh.js');
 var sshCredentials = require('./lib/sshCredentials.js');
 
-module.exports = function (grunt) {
+module.exports = function(grunt){
 
-    grunt.registerTask('ec2_deploy', 'Deploys to the instance using `rsync`, reloads `pm2` and `nginx`', function (name) {
+    grunt.registerTask('ec2_deploy', 'Deploys to the instance using `rsync`, reloads `pm2` and `nginx`', function(name){
         conf.init(grunt);
 
         if (arguments.length === 0) {
@@ -55,7 +55,7 @@ module.exports = function (grunt) {
         ]), workflow.if_has('PM2_ENABLED', [
             util.format('sudo ln -sfn %s %s', dest, target),
             commands.pm2_reload(),
-            commands.pm2_start(name)
+            commands.pm2_start("production")
         ]), workflow.if_has('APACHE_ENABLED', [
             util.format('sudo service apache2 reload')
         ]), workflow.if_has('NGINX_ENABLED', [
