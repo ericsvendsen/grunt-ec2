@@ -26,7 +26,9 @@ module.exports = function (grunt) {
         var steps = [[
             util.format('echo "configuring up %s instance..."', name)
         ], workflow.if_has('APACHE_ENABLED', [ // install apache
-            'sudo apt-get install -y apache2'
+            'sudo apt-get install -y apache2',
+			'sudo a2enmod mod_proxy',
+			'sudo a2enmod mod_proxy_http'
         ]), workflow.if_has('PORT_FORWARDING_ENABLED', [ // enable forwarding
             'cp /etc/sysctl.conf /tmp/',
             'echo "net.ipv4.ip_forward = 1" >> /tmp/sysctl.conf',
